@@ -8,6 +8,14 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
+### A package skill's slug has the same shape as one made in the app
+
+The skills screen, the skills API and the store all accept a slug of 2 to 40 lowercase letters,
+digits and hyphens that starts and ends with a letter or digit. `skills.yaml` accepted any length
+and a trailing hyphen, so a package could seed `a`, `a-` or a sixty-character slug that nobody
+could then edit. A package with such a slug is now refused at load, with a sentence naming it.
+Every slug in `examples/fintech` already has the shape.
+
 ### `start.sh` names the port to change on macOS
 
 When the API server's or the app's port was held by another process, `start.sh` was meant to say
