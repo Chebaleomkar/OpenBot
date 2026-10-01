@@ -8,6 +8,15 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
+### A proxy password containing `%` no longer stops every shell command
+
+A proxy password with a `%` that does not start an escape, such as `p%zz`, made decoding it throw.
+- In the computer's shell, which strips proxy credentials before every command, every `/exec`
+  failed as a result.
+- Resolving a Bot's egress proxy failed the same way.
+
+Such a password is now taken as written, and it is still kept out of the shell's environment.
+
 ### `start.sh` names the port to change on macOS
 
 When the API server's or the app's port was held by another process, `start.sh` was meant to say
