@@ -8,6 +8,13 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
+### Revoking a credential twice says so, instead of answering a server error
+
+Revoking a credential that was already revoked, or that does not exist, now answers 404 with the
+reason. Rotating one that is gone answers 404, and rotating one that is revoked or does not match
+the key answers 409. Before, each answered a plain-text 500, as if the deployment were broken; a
+double click on Revoke was enough to cause it. The refused-rotation audit row is written as before.
+
 ### `start.sh` names the port to change on macOS
 
 When the API server's or the app's port was held by another process, `start.sh` was meant to say
