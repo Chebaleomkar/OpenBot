@@ -8,6 +8,13 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
+### The channel list no longer skips channels made in the same millisecond
+
+The channel list's page cursor kept the last channel's time to the millisecond, while PostgreSQL
+keeps it to the microsecond. Channels later in that same millisecond, as a package sync or an
+import makes them, sorted after the cursor and were on no page. The cursor now carries the time to
+the microsecond, as the audit trail's cursor already did.
+
 ### `start.sh` names the port to change on macOS
 
 When the API server's or the app's port was held by another process, `start.sh` was meant to say
