@@ -8,6 +8,14 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
+### The egress filter reaches IPv6 addresses over plain HTTP and through an IPv6 upstream
+
+A plain-HTTP request through a computer's egress filter to an IPv6 address, such as
+`http://[::1]:8080/`, answered 502: the filter passed the address on with its brackets, and the
+socket looked it up as a name. An upstream proxy configured at an IPv6 address could not be reached
+for the same reason, and a `CONNECT` to an IPv6 host was sent to the upstream without the brackets
+an authority needs. All three now work. HTTPS straight to an IPv6 address already did.
+
 ### A playground component's Published switch publishes its source too
 
 The Published switch on an admin component page called the generic publication endpoint for every
