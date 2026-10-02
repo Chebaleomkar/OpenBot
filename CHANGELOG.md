@@ -15,6 +15,12 @@ address, so a typo for one host opened an allow-list to all of them. `/0x8` and 
 accepted the same way. A zone id such as `fe80::1%eth0` was accepted too, and then threw from the
 filter on the first connection that policy judged. Each is now refused when the rule is saved, with
 the sentence a malformed range already got. A rule like this saved earlier matches nothing.
+### A channel cursor with a malformed time reads as the first page, not a 500
+
+`GET /api/channels` only checked that a cursor's time was a string before casting it with
+`::timestamptz`, so a hand-edited or corrupted cursor such as `{"recency": "not-a-date"}` answered
+500. A time that is not the UTC timestamp the list writes now reads as the first page, the way every
+other malformed cursor already did.
 
 ### A playground component's Published switch publishes its source too
 
