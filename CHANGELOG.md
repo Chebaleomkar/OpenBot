@@ -15,6 +15,12 @@ A plain-HTTP request through a computer's egress filter to an IPv6 address, such
 socket looked it up as a name. An upstream proxy configured at an IPv6 address could not be reached
 for the same reason, and a `CONNECT` to an IPv6 host was sent to the upstream without the brackets
 an authority needs. All three now work. HTTPS straight to an IPv6 address already did.
+### A channel cursor with a malformed time reads as the first page, not a 500
+
+`GET /api/channels` only checked that a cursor's time was a string before casting it with
+`::timestamptz`, so a hand-edited or corrupted cursor such as `{"recency": "not-a-date"}` answered
+500. A time that is not the UTC timestamp the list writes now reads as the first page, the way every
+other malformed cursor already did.
 
 ### A playground component's Published switch publishes its source too
 
