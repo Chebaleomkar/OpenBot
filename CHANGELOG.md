@@ -13,6 +13,12 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 A body that could not be parsed as JSON, sent to any approvals route that reads one, such as
 `PATCH /api/approvals/preferences` or `POST /api/approvals/rules`, answered 500 with the parser's own
 message. It now answers 400 "Supply a valid request.", as the delivery routes do.
+### A channel cursor with a malformed time reads as the first page, not a 500
+
+`GET /api/channels` only checked that a cursor's time was a string before casting it with
+`::timestamptz`, so a hand-edited or corrupted cursor such as `{"recency": "not-a-date"}` answered
+500. A time that is not the UTC timestamp the list writes now reads as the first page, the way every
+other malformed cursor already did.
 
 ### A playground component's Published switch publishes its source too
 
