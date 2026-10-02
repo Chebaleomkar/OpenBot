@@ -8,6 +8,13 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
+### `@Ops Lead` in a group addresses Ops Lead, not Ops as well
+
+In a group conversation, a reply naming `@Ops Lead` also addressed a Bot called Ops, because the
+shorter name matched at the same `@`, so both answered. An email address addressed a Bot by its
+domain: `jo@sam.com` reached a Bot called Sam. Where two names start at the same `@`, only the
+longer one is now addressed, and an `@` straight after a letter or digit is not a mention.
+
 ### A playground component's Published switch publishes its source too
 
 The Published switch on an admin component page called the generic publication endpoint for every
