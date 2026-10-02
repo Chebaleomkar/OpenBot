@@ -15,6 +15,12 @@ cards, and to the Bots it named. A fault in that hand-on, such as the audit trai
 unreachable, wrote the error's text over the saved reply and marked it failed, and a retry did not
 bring the reply back. The reply now stays as saved, and the fault is logged as
 `group-turn-after-reply-error`.
+### A channel cursor with a malformed time reads as the first page, not a 500
+
+`GET /api/channels` only checked that a cursor's time was a string before casting it with
+`::timestamptz`, so a hand-edited or corrupted cursor such as `{"recency": "not-a-date"}` answered
+500. A time that is not the UTC timestamp the list writes now reads as the first page, the way every
+other malformed cursor already did.
 
 ### A playground component's Published switch publishes its source too
 
