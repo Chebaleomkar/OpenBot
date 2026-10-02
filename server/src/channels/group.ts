@@ -780,6 +780,7 @@ export function createGroupConversations(deps: {
     // Partial text, written at most this often, so the transcript shows the reply as it arrives.
     let latest: string | null = null;
     let writing: Promise<void> | null = null;
+    let saved = false;
     let lastWrite = 0;
     const every = deps.progressEveryMs ?? 400;
     const flush = () => {
@@ -850,10 +851,24 @@ export function createGroupConversations(deps: {
         return;
       }
       await deps.store.finish(id, result.replyText, "completed");
+      saved = true;
       await deps.activity?.(turn, agentId, result.replyText, `group:${id}`);
       await postConsents(turn, agentId, threadId, id, consents);
       await relay(turn, bot, id, result.replyText, bots, runId);
     } catch (error) {
+      // The reply is already saved: a fault handing it on is not this Bot's answer failing, and
+      // writing it over the row would replace a good reply with an error that no retry repairs.
+      if (saved) {
+        console.error(
+          JSON.stringify({
+            type: "group-turn-after-reply-error",
+            error: error instanceof Error ? error.message : String(error),
+            context: { channelId: turn.channelId, agentId, rowId: id },
+            timestamp: new Date().toISOString(),
+          }),
+        );
+        return;
+      }
       await writing;
       await postConsents(turn, agentId, threadId, id, consents);
       if (error instanceof HeadlessToolSuspension)

@@ -8,6 +8,14 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
+### A Bot's saved reply in a group is no longer replaced by a later error
+
+In a group conversation, a Bot's reply was saved, then handed on: to Activity, to any consent
+cards, and to the Bots it named. A fault in that hand-on, such as the audit trail being
+unreachable, wrote the error's text over the saved reply and marked it failed, and a retry did not
+bring the reply back. The reply now stays as saved, and the fault is logged as
+`group-turn-after-reply-error`.
+
 ### A playground component's Published switch publishes its source too
 
 The Published switch on an admin component page called the generic publication endpoint for every

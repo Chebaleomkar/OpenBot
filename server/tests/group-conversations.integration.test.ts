@@ -91,6 +91,7 @@ function service(options: {
   >;
   maxDepth?: number;
   granted?: boolean;
+  auditFails?: boolean;
   privateShare?: Parameters<typeof createGroupConversations>[0]["privateShare"];
   listenForConsent?: Parameters<
     typeof createGroupConversations
@@ -122,7 +123,12 @@ function service(options: {
     },
     caps: { maxDepth: options.maxDepth ?? 1, maxPerRun: 2 },
     mayAddress: async () => options.granted ?? true,
-    auditStore: { insert: async (event) => void audit.push(event) },
+    auditStore: {
+      insert: async (event) => {
+        if (options.auditFails) throw new Error("audit store unavailable");
+        audit.push(event);
+      },
+    },
     createChannel: async (ownerUserId, agentIds) => {
       const channel = await channelStore.create(
         { id: ownerUserId, role: "user" },
@@ -315,6 +321,30 @@ describe("group conversations in PostgreSQL", () => {
           .where(eq(workItems.kind, GROUP_TURN_KIND))
       ).filter((row) => row.key.startsWith(prefix) && row.key.includes(">")),
     ).toEqual([]);
+  });
+  test("a fault handing a saved reply on does not write over the reply", async () => {
+    const owner = await person();
+    const ada = await bot(owner, "Ada");
+    const grace = await bot(owner, "Grace");
+    const channel = await channelStore.create(owner, [ada, grace]);
+    createdChannels.push(channel.id);
+    const { conversations } = service({
+      auditFails: true,
+      replies: { [ada]: () => "@Grace over to you", [grace]: () => "ok" },
+    });
+    await conversations.send(owner.id, channel.id, {
+      id: `${prefix}-relay-fault`,
+      text: "go",
+      agentId: ada,
+    });
+    await drain(conversations);
+    const reply = (
+      await conversations.list(owner.id, channel.id)
+    ).messages.find((row) => row.agentId === ada);
+    expect(reply).toMatchObject({
+      status: "completed",
+      text: "@Grace over to you",
+    });
   });
   test("Bots answer in the order chosen, or in the order a message names them", async () => {
     const owner = await person();
