@@ -14,6 +14,12 @@ In a group conversation, a reply naming `@Ops Lead` also addressed a Bot called 
 shorter name matched at the same `@`, so both answered. An email address addressed a Bot by its
 domain: `jo@sam.com` reached a Bot called Sam. Where two names start at the same `@`, only the
 longer one is now addressed, and an `@` straight after a letter or digit is not a mention.
+### A channel cursor with a malformed time reads as the first page, not a 500
+
+`GET /api/channels` only checked that a cursor's time was a string before casting it with
+`::timestamptz`, so a hand-edited or corrupted cursor such as `{"recency": "not-a-date"}` answered
+500. A time that is not the UTC timestamp the list writes now reads as the first page, the way every
+other malformed cursor already did.
 
 ### A playground component's Published switch publishes its source too
 
