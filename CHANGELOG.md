@@ -8,12 +8,6 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
-### Deleting a channel twice is recorded once
-
-A second `DELETE` of the same channel, from a retry or a second tab, still answers 204 as before.
-It no longer tells every member again, and no longer writes another `channel.deleted` row to the
-audit trail for a deletion that did not happen.
-
 **Before upgrading.** Four things change for an existing deployment:
 - Automatic Learning is on unless an administrator saved it off. It does nothing until a Learning
   container is assigned; see below.
@@ -25,6 +19,12 @@ audit trail for a deletion that did not happen.
   `0051_routine_enabled_at`.
 - An existing Windows clone checks text files out with LF only after
   `git rm -r --cached . && git reset --hard` on a clean tree.
+
+### Deleting a channel twice is recorded once
+
+A second `DELETE` of the same channel, from a retry or a second tab, still answers 204 as before.
+It no longer tells every member again, and no longer writes another `channel.deleted` row to the
+audit trail for a deletion that did not happen.
 
 ### The Helm chart configures Slack, Teams, text messages, push, SCIM, inbound email and OpenTelemetry
 
