@@ -8,14 +8,6 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
-### A Bot's saved reply in a group is no longer replaced by a later error
-
-In a group conversation, a Bot's reply was saved, then handed on: to Activity, to any consent
-cards, and to the Bots it named. A fault in that hand-on, such as the audit trail being
-unreachable, wrote the error's text over the saved reply and marked it failed, and a retry did not
-bring the reply back. The reply now stays as saved, and the fault is logged as
-`group-turn-after-reply-error`.
-
 **Before upgrading.** Four things change for an existing deployment:
 - Automatic Learning is on unless an administrator saved it off. It does nothing until a Learning
   container is assigned; see below.
@@ -27,6 +19,14 @@ bring the reply back. The reply now stays as saved, and the fault is logged as
   `0051_routine_enabled_at`.
 - An existing Windows clone checks text files out with LF only after
   `git rm -r --cached . && git reset --hard` on a clean tree.
+
+### A Bot's saved reply in a group is no longer replaced by a later error
+
+In a group conversation, a Bot's reply was saved, then handed on: to Activity, to any consent
+cards, and to the Bots it named. A fault in that hand-on, such as the audit trail being
+unreachable, wrote the error's text over the saved reply and marked it failed, and a retry did not
+bring the reply back. The reply now stays as saved, and the fault is logged as
+`group-turn-after-reply-error`.
 
 ### The Helm chart configures Slack, Teams, text messages, push, SCIM, inbound email and OpenTelemetry
 
