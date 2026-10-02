@@ -15,6 +15,12 @@ A trigger's event is cut to 32 KiB before it is recorded, keeping each top-level
 that, such as forty 1000-character fields, left the excerpt nothing to give up, and the loop
 trimming it never ended. That loop runs on the server's only thread, so every request stopped being
 answered. The kept fields now get at most half the space, and the rest is still in the excerpt.
+### A channel cursor with a malformed time reads as the first page, not a 500
+
+`GET /api/channels` only checked that a cursor's time was a string before casting it with
+`::timestamptz`, so a hand-edited or corrupted cursor such as `{"recency": "not-a-date"}` answered
+500. A time that is not the UTC timestamp the list writes now reads as the first page, the way every
+other malformed cursor already did.
 
 ### A playground component's Published switch publishes its source too
 
